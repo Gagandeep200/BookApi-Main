@@ -1,14 +1,7 @@
 
 let books = [
     {
-        ISBN: "12345Books",
-        title: "Testla",
-        pubDate:"2021-08-08",
-        language: "en",
-        Page_num:250,
-        Author:[1,2],
-        publication: 1,
-        category:["tech","programming","education",]
+        
     },
     {
         ISBN: "1234567Book2",

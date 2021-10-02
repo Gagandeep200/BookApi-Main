@@ -10,7 +10,7 @@ booky.listen(3000,()=> console.log("Hey server is running fine"))
 
 /*
 Route           /authors
-Description     to get specific author based on name
+Description     to get specific author 
 Access          PUBLIC
 Parameter       name
 Methods         GET
@@ -277,7 +277,7 @@ return res.json({books:updatedBookDatabase});
 
 /*
 Route           /book/delete/author
-Description    delete a author from book
+Description    delete an author from book
 Access          PUBLIC
 Parameter      isbn, author id
 Methods         DELETE
@@ -313,3 +313,40 @@ booky.delete("/book/delete/author/:isbn/:authorId", (req,res) => {
     message: "Author was deleted!!!!"
   });
 });
+
+/*
+Route           /publications/delete/book
+Description    delete a book from publications
+Access          PUBLIC
+Parameter      isbn, publication id
+Methods         DELETE
+*/
+booky.delete("/publication/delete/book/:isbn/:pubId", (req,res) => {
+  //update publication database
+  database.publications.forEach((publication) => {
+    if(publication.id === parseInt(req.params.pubId)){
+        const newBooksList = publication.books.filter(
+          (book) => book !== req.params.isbn
+        );
+
+        publication.books = newBooksList;
+          return;
+      }
+    });
+
+  //update books database
+  database.books.forEach((books) => {
+    if(book.ISBN ===req.params.isbn){
+      book.publication = 0; // no publication available
+      return;
+    }
+  });
+
+  return res.json({books: database.books, publications: database.publication})
+
+});
+  
+
+ 
+
+
