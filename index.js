@@ -250,6 +250,110 @@ booky.put("/book/update/:isbn",async (req,res) => {
     books: updatedBook
   });
 });
+/*********Updating new author**********/
+/*
+Route            /book/author/update
+Description      Update /add new author
+Access           PUBLIC
+Parameter        isbn
+Methods          PUT
+*/
+
+booky.put("/book/author/update/:isbn", async(req,res) =>{
+  //Update book database
+const updatedBook = await BookModel.findOneAndUpdate(
+  {
+    ISBN: req.params.isbn
+  },
+  {
+    $addToSet: {
+      authors: req.body.newAuthor
+    }
+  },
+  {
+    new: true
+  }
+);
+
+  //Update the author database
+  const updatedAuthor = await AuthorModel.findOneAndUpdate(
+    {
+      id: req.body.newAuthor
+    },
+    {
+      $addToSet: {
+        books: req.params.isbn
+      }
+    },
+    {
+      new: true
+    }
+  );
+
+  return res.json(
+    {
+      bookss: updatedBook,
+      authors: updatedAuthor,
+      message: "New author was added"
+    }
+  );
+} );
+/*
+Route            /publication/update/book
+Description      Update /add new publication
+Access           PUBLIC
+Parameter        isbn
+Methods          PUT
+*/
+
+booky.put("/publication/update/book/:isbn", (req,res) => {
+  //Update the publication database
+  database.publication.forEach((pub) => {
+    if(pub.id === req.body.pubId) {
+      return pub.books.push(req.params.isbn);
+    }
+  });
+
+  //Update the book database
+  database.books.forEach((book) => {
+    if(book.ISBN === req.params.isbn) {
+      book.publications = req.body.pubId;
+      return;
+    }
+  });
+
+  return res.json(
+    {
+      books: database.books,
+      publications: database.publication,
+      message: "Successfully updated publications"
+    }
+  );
+});
+
+/*
+Route           /publication/update/book
+Description     Update book on isbn
+Access          PUBLIC
+Parameter       isbn
+Methods         Put
+*/
+booky.put("/book/update/:isbn",async (req,res)=> {
+const updatedBook = await BookModel.findOneAndUpdate(
+  {
+    ISBN: req.params.isbn
+  },  
+  {
+    title: req.body.bookTitle
+  },
+  {
+    new:true
+  }
+);
+return res.json({
+  books:updatedBook
+});
+});
 
 /*
 Route           /book/update/author
